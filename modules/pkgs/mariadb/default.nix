@@ -129,6 +129,7 @@ everything = stdenv.mkDerivation (common // {
     "-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1"
     "-DWITHOUT_FEDERATED_STORAGE_ENGINE=1"
     "-DWITH_WSREP=ON"
+    "-DWITH_INNODB_DISALLOW_WRITES=ON"
   ];
 
   postInstall = common.postInstall + ''
