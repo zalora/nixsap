@@ -56,35 +56,48 @@ let
       ?>
     '';
 
+  extensionDir = pkgs.runCommand "mediawiki-extensions" {} ''
+    mkdir $out
+    ${concatMapStrings (e: ''
+      ln --symbolic ${pkgs.mediawikiExtensions.${e}} $out/${e}
+    '') enabledExtentions}
+  '';
+
   localSettings = pkgs.writePHPFile "LocalSettings.php" ''
     <?php
-      ${concatMapStringsSep "\n  " (e:
-        "require_once ('${pkgs.mediawikiExtensions.${e}}/${e}.php');"
-        ) enabledExtentions
-      }
 
-      ${optionalString (elem "GraphViz" enabledExtentions)
-       "$wgGraphVizSettings->execPath = '${pkgs.graphviz}/bin/';"
-      }
+      // Newer extensions use wfLoadExtension (available since MediaWiki 1.25),
+      // while older ones need require_once
+      // https://www.mediawiki.org/wiki/Manual:Extension_registration
+      $wgExtensionDirectory = '${extensionDir}';
+      ${concatMapStrings (e: ''
+        if (file_exists('${extensionDir}/${e}/extension.json')) {
+          wfLoadExtension('${e}');
+        } else {
+          require_once('${pkgs.mediawikiExtensions.${e}}/${e}.php');
+        }
+      '') enabledExtentions}
 
-      ${optionalString (elem "MathJax" enabledExtentions) ''
-        # MathJax 0.7:
-        MathJax_Parser::$MathJaxJS = '${pkgs.mathJax}/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full';
+      ${optionalString (elem "GraphViz" enabledExtentions) ''
+        $wgGraphVizSettings->execPath = '${pkgs.graphviz}/bin/';
       ''}
 
+      ${optionalString (cfg.logo != null) ''
+        $wgLogo = "https://{$_SERVER['HTTP_HOST']}${cfg.logo}";
+      ''}
+
+      ${optionalString (cfg.maxUploadSize != null) ''
+        $wgMaxUploadSize = ${toString cfg.maxUploadSize};
+      ''}
+
+      $wgAuthRemoteuserUserName = $_SERVER['HTTP_FROM'];
       $wgDiff = '${pkgs.diffutils}/bin/diff';
       $wgDiff3 = '${pkgs.diffutils}/bin/diff3';
+      $wgDirectoryMode = 0750;
       $wgImageMagickConvertCommand = '${pkgs.imagemagick}/bin/convert';
-      ${optionalString (cfg.logo != null) ''
-        $wgLogo = '${cfg.logo}';
-      ''}
-      ${optionalString (cfg.maxUploadSize != null)
-        "$wgMaxUploadSize = ${toString cfg.maxUploadSize};"
-      }
+      wfLoadSkin('Vector');
 
       require_once ('${settings}');
-
-      $wgDirectoryMode = 0750;
     ?>
   '';
 
@@ -195,12 +208,6 @@ let
       }
       '') enabledExtentions
     }
-
-    ${optionalString (elem "MathJax" enabledExtentions) ''
-      location ${pkgs.mathJax} {
-        alias ${pkgs.mathJax};
-      }
-    ''}
 
     location / {
       try_files $uri $uri/ @rewrite;

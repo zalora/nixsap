@@ -12,7 +12,7 @@ let
   ];
 
 in pkgs.stdenv.mkDerivation rec {
-  version = "1.23.17";
+  version = "1.29.1";
   name = "mediawiki-${version}";
 
   src = let
@@ -20,13 +20,8 @@ in pkgs.stdenv.mkDerivation rec {
     minor = "${elemAt v 0}.${elemAt v 1}";
   in pkgs.fetchurl {
     url = "https://releases.wikimedia.org/mediawiki/${minor}/${name}.tar.gz";
-    sha256 = "1fxymqirjj2sfbrgcgxig9k6ik5ndw9qq9qn91xm9cnpjksc079x";
+    sha256 = "03mpazbxvb011s2nmlw5p6dc43yjgl5yrsilmj1imyykm57bwb3m";
   };
-
-  patches = [
-    ./T122487.patch
-    ./file-backend-default-mode.patch
-  ];
 
   outputs = [ "out" ] ++ bundled;
 
