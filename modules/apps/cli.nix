@@ -20,7 +20,7 @@ let
         #include <unistd.h>
         #include <grp.h>
         #include <pwd.h>
-        #include <stdio.h> 
+        #include <stdio.h>
         #include <stdlib.h>
         #include <sys/types.h>
 
@@ -84,7 +84,7 @@ let
           return EXIT_FAILURE;
         }
       '';
-    in pkgs.runCommand name {} "gcc -Wall -Wextra -Werror -s -std=gnu99 -O2 ${src} -o $out";
+    in pkgs.runCommand name {} "${pkgs.stdenv.cc}/bin/gcc -Wall -Wextra -Werror -s -std=gnu99 -O2 ${src} -o $out";
 
   cliapp = submodule({name, ...}:
   {
