@@ -22,11 +22,14 @@ in genAttrs bundled (e: mediawiki.${e}) //
     sha256 = "1ddy3w7sqgzmilfks13pj6qx8d4b96nrlg9hfid38iphqq566v9q";
   };
 
+  # It's unclear why, but 3967ee7 introduces a bug that causes "Fontconfig
+  # error: Cannot load default config file". Here we use the parent of that
+  # that commit.
   GraphViz = fetchFromGitHub {
     owner = "wikimedia";
     repo = "mediawiki-extensions-GraphViz";
-    rev = "e71433e8475513aa17b244627f1f65826d80b08e";
-    sha256 = "0b7kwz89pzv82xgz0gd93q88vn3jhpzk103za0a5h6dbfmmnnbvh";
+    rev = "ea3717f1c98e3cab16ea4bf094db536703ff5341";
+    sha256 = "04dhzisw75mg2hd6yqg4dnhlbayxf3lq0g6f9lafykdsvqx70by4";
   };
 
   MsUpload = fetchFromGitHub {
