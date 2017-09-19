@@ -35,7 +35,7 @@ in stdenv.mkDerivation {
 
     substituteInPlace "$out/bin/"* \
       --replace pmp-check-aws-rds '${pmp-check-aws-rds}/bin/pmp-check-aws-rds' \
-      --replace dig '${pkgs.bind}/bin/dig'
+      --replace dig '${pkgs.dnsutils}/bin/dig'
 
     substituteInPlace "$conf" \
       --replace check_aws_rds "$out/bin/check_aws_rds"
