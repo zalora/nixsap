@@ -29,7 +29,8 @@ let
     };
 
   rights = [
-    "apihighlimits" "applychangetags" "autoconfirmed" "autopatrol"
+    "apihighlimits" "applychangetags" "autoconfirmed" "autocreateaccount"
+    "autopatrol"
     "bigdelete" "block" "blockemail" "bot" "browsearchive"
     "changetags" "createaccount" "createpage" "createtalk"
     "delete" "deletedhistory" "deletedtext" "deletelogentry"

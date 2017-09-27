@@ -78,6 +78,19 @@ let
         }
       '') enabledExtentions}
 
+      // XXX: These are tailored for Sproxy. Perhaps they should be made
+      // customizable.
+      ${optionalString (elem "Auth_remoteuser" enabledExtentions) ''
+        $wgAuthRemoteuserUserName = $_SERVER['HTTP_FROM'];
+        $wgAuthRemoteuserUserPrefs = [
+          'realname' => "{$_SERVER['HTTP_X_GIVEN_NAME']} {$_SERVER['HTTP_X_FAMILY_NAME']}",
+          'email' => $_SERVER['HTTP_FROM'],
+        ];
+
+        // Allow @ to use email address as username
+        $wgInvalidUsernameCharacters = ':';
+      ''}
+
       ${optionalString (elem "GraphViz" enabledExtentions) ''
         $wgGraphVizSettings->execPath = '${pkgs.graphviz}/bin/';
       ''}
@@ -90,7 +103,6 @@ let
         $wgMaxUploadSize = ${toString cfg.maxUploadSize};
       ''}
 
-      $wgAuthRemoteuserUserName = $_SERVER['HTTP_FROM'];
       $wgDiff = '${pkgs.diffutils}/bin/diff';
       $wgDiff3 = '${pkgs.diffutils}/bin/diff3';
       $wgDirectoryMode = 0750;
