@@ -9,7 +9,7 @@
 
 /*
   jq to make it human readable:
-  curl https://updates.jenkins-ci.org/current/update-center.actual.json | jq . > update-center.actual.json
+  curl --location https://updates.jenkins-ci.org/stable/update-center.actual.json | jq . > update-center.actual.json
 */
 
 
