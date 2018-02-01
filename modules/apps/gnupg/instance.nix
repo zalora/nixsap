@@ -32,7 +32,7 @@ in {
     package = mkOption {
       description = "GnuPG2 package";
       type = package;
-      default = pkgs.gnupg21;
+      default = pkgs.gnupg;
     };
 
     publicKeys = mkOption {
