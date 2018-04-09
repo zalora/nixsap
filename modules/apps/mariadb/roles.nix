@@ -18,7 +18,15 @@ let
 
   inherit (config.nixsap.apps.mariadb) roles;
   basicRoles = filterAttrs (_: v: isAttrs v) roles;
-  topRoles = filterAttrs (_: v: isList v) roles;
+
+  topRoles =
+  let
+    expand = role: lib.unique (lib.concatMap (subrole: if isList roles.${subrole}
+      then expand roles.${subrole}
+      else [subrole]
+    ) role);
+  in lib.mapAttrs (_: expand) (filterAttrs (_: v: isList v) roles);
+
   allRoles = attrNames roles;
   sqlList = concatMapStringsSep ", " (i: "'${i}'");
 
