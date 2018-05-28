@@ -1,5 +1,5 @@
 { stdenv, fetchurl, cmake, pkgconfig, ncurses, zlib, xz, lzo, lz4, bzip2, snappy
-, openssl, boost, judy, bison, libxml2
+, libiconv, openssl, pcre, boost, judy, bison, libxml2
 , libaio, libevent, groff, jemalloc, cracklib, systemd, numactl, perl
 }:
 
@@ -9,6 +9,7 @@ let # in mariadb # spans the whole file
 
 mariadb = everything // {
   inherit client; # libmysqlclient.so in .out, necessary headers in .dev and utils in .bin
+  inherit connector-c;
   server = everything; # a full single-output build, including everything in `client` again
   lib = client; # compat. with the old mariadb split
 };
@@ -137,6 +138,47 @@ everything = stdenv.mkDerivation (common // {
     rm $out/bin/mysqlbug
   '';
 });
+
+connector-c = stdenv.mkDerivation rec {
+  name = "mariadb-connector-c-${version}";
+  version = "2.3.4";
+
+  src = fetchurl {
+    url = "https://downloads.mariadb.org/interstitial/connector-c-${version}/mariadb-connector-c-${version}-src.tar.gz/from/http%3A//ftp.hosteurope.de/mirror/archive.mariadb.org/?serve";
+    sha256 = "1g1sq5knarxkfhpkcczr6qxmq12pid65cdkqnhnfs94av89hbswb";
+    name   = "mariadb-connector-c-${version}-src.tar.gz";
+  };
+
+  # outputs = [ "dev" "out" ]; FIXME: cmake variables don't allow that < 3.0
+  cmakeFlags = [
+    "-DWITH_EXTERNAL_ZLIB=ON"
+    "-DMYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock"
+  ];
+
+  # The cmake setup-hook uses $out/lib by default, this is not the case here.
+  preConfigure = stdenv.lib.optionalString stdenv.isDarwin ''
+    cmakeFlagsArray+=("-DCMAKE_INSTALL_NAME_DIR=$out/lib/mariadb")
+  '';
+
+  nativeBuildInputs = [ cmake ];
+  propagatedBuildInputs = [ openssl zlib ];
+  buildInputs = [ libiconv ];
+
+  enableParallelBuilding = true;
+
+  postFixup = ''
+    ln -sv mariadb_config $out/bin/mysql_config
+    ln -sv mariadb $out/lib/mysql
+    ln -sv mariadb $out/include/mysql
+  '';
+
+  meta = with stdenv.lib; {
+    description = "Client library that can be used to connect to MySQL or MariaDB";
+    license = licenses.lgpl21;
+    maintainers = with maintainers; [ globin ];
+    platforms = platforms.all;
+  };
+};
 
 in mariadb
 
