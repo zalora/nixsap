@@ -9,7 +9,7 @@ stdenv.mkDerivation rec {
   };
 
   buildInputs = with pkgs; [
-    autoreconfHook bind.dnsutils fping libdbi libtap mariadb.lib openldap.dev
+    autoreconfHook bind.dnsutils fping libdbi libtap mariadb.connector-c openldap.dev
     openssh openssl.dev perl postgresql procps smbclient sudo
   ];
 
