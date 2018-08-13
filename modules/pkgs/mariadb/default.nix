@@ -17,7 +17,7 @@ common = rec { # attributes common to both builds
   version = "10.1.30";
 
   src = fetchurl {
-    url    = "https://downloads.mariadb.org/interstitial/mariadb-${version}/source/mariadb-${version}.tar.gz";
+    url    = "https://downloads.mariadb.com/MariaDB/mariadb-${version}/source/mariadb-${version}.tar.gz";
     sha256 = "123ck7q5lk535qm8i5b0gk1pc5j9k1f9pl1vki30m7l14id5wfhp";
   };
 
