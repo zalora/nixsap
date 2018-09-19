@@ -143,7 +143,7 @@ in {
       keepalive_timeout 65;
       sendfile on;
       ssl_prefer_server_ciphers on;
-      ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+      ssl_protocols TLSv1.2;
       tcp_nodelay on;
       tcp_nopush on;
       types_hash_max_size 2048;
