@@ -1,13 +1,13 @@
 { stdenv, pkgs, fetchurl, python27Packages }:
 let
 
-  rev = "7f4a9852a0e470698d90afc0036d2738a4906477";
+  rev = "4b01b396cf3af8fb68877dc3b5d91f5951b0a58b";
 
   pmp-check-aws-rds = stdenv.mkDerivation rec {
     name = "pmp-check-aws-rds";
     src = fetchurl {
       url = "https://raw.githubusercontent.com/percona/percona-monitoring-plugins/${rev}/nagios/bin/pmp-check-aws-rds.py";
-      sha256 = "1ps7ag2hmbbzg3w6h76l6j4ijigfhlvmirj8h7v9qyrdcgzlsjma";
+      sha256 = "2688eabc2ef110d7b122745e77078c3afb99567186460796eb230dd00bbd3dfb";
     };
 
     buildInputs = with python27Packages; [ python wrapPython ];
