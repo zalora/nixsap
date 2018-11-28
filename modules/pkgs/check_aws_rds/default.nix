@@ -7,7 +7,7 @@ let
     name = "pmp-check-aws-rds";
     src = fetchurl {
       url = "https://raw.githubusercontent.com/percona/percona-monitoring-plugins/${rev}/nagios/bin/pmp-check-aws-rds.py";
-      sha256 = "2688eabc2ef110d7b122745e77078c3afb99567186460796eb230dd00bbd3dfb";
+      sha256 = "03njl0d359ljfw1iicdf6y1x0q0w7ygn4nqixwblqcah6ii3icv8";
     };
 
     buildInputs = with python27Packages; [ python wrapPython ];
